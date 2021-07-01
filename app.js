@@ -11,7 +11,7 @@ var usersRouter = require('./routes/users');
 var vaccinationDetailsRouter = require('./routes/vax-details');
 
 
-mongoose.connect('mongodb://localhost:27017/fyp-db', {useNewUrlParser: true});
+mongoose.connect('mongodb://fyp-mongodb-cluster-service-loadbalancer-local/database', {useNewUrlParser: true}); //'mongodb://localhost:27017/fyp-db'
 var app = express();
 
 // view engine setup
@@ -25,7 +25,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
-app.use(cors({origin: "http://localhost:4200"}));
+app.use(cors({origin: ["http://localhost:4200","http://localhost:80","http://localhost"]}));
 
 app.use('/', indexRouter);
 app.use('/api/users', usersRouter);

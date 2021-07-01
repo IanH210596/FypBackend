@@ -1,0 +1,94 @@
+# YAML file for API local Deployments and Services 
+# YAML to deploy MongoDB image and allow communication over container port 27017, with a database initialised named "database"
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fyp-mongodb-local
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment-name: fyp-mongodb-local
+  template:
+    metadata:
+      labels:
+        deployment-name: fyp-mongodb-local
+    spec:
+      containers:
+        - name: fyp-mongodb-local
+          image: mongo
+          env: 
+            - name: MONGO_INITDB_DATABASE
+              value: database
+          ports:
+            - containerPort: 27017
+---
+# YAML to deploy loadbalancer for the MongoDB database mapping incoming port 27017 to target port 27017 for the MongoDB deployment named "fyp-mongodb-local"
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service-label: fyp-mongodb-cluster-service-local
+  name: fyp-mongodb-cluster-service-loadbalancer-local
+spec:
+  type: LoadBalancer
+  ports:
+    - name: fyp-mongodb-load-balancer-service-port-local
+      port: 27017
+      targetPort: 27017
+      protocol: TCP
+  selector:
+    deployment-name: fyp-mongodb-local
+---
+# YAML to deploy latest API image pushed to the Azure Container Repository for API local images and allow communication over container port 3000
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fyp-api-local
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      deployment-name: fyp-api-local
+  template:
+    metadata:
+      labels:
+        deployment-name: fyp-api-local
+    spec:
+      containers:
+      - name: fyp-api-local
+        image: ianh1206/fypbackend:v4
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+---
+# YAML to deploy loadbalancer for the API mapping incoming port 3000 to target port 3000 for the API deployment named "fyp-api-local"
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    service-label: fyp-api-cluster-service-local
+  name: fyp-api-cluster-service-loadbalancer-local
+spec:
+  type: LoadBalancer
+  ports:
+    - name: fyp-api-load-balancer-service-port-local
+      port: 3000
+      targetPort: 3000
+      protocol: TCP    
+  selector:
+    deployment-name: fyp-api-local
+---
+#  YAML to deploy Horizontal Pod Autoscaler for the API "fyp-api-local" that will scale the API from 1 to 5 replicas if allocated CPU utilization for a container exceeds 50%
+apiVersion: autoscaling/v1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: fyp-api-local-hpa
+spec:
+  maxReplicas: 5 # define max replica count
+  minReplicas: 1  # define min replica count
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: fyp-api-local
+  targetCPUUtilizationPercentage: 50 # target CPU utilization
