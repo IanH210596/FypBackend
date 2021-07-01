@@ -3,13 +3,15 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-const mongoose = require("mongoose");
-
-mongoose.connect('mongodb://localhost:27017/fyp-db', {useNewUrlParser: true});
+const mongoose = require('mongoose');
+const cors = require('cors');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var vaccinationDetailsRouter = require('./routes/vax-details');
 
+
+mongoose.connect('mongodb://localhost:27017/fyp-db', {useNewUrlParser: true});
 var app = express();
 
 // view engine setup
@@ -22,8 +24,12 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+
+app.use(cors({origin: "http://localhost:4200"}));
+
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
+app.use('/api/users', usersRouter);
+app.use('/api/vaccinationDetails', vaccinationDetailsRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
