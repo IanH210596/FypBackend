@@ -1,8 +1,9 @@
 var express = require('express');
 var router = express.Router();
-const vaccinationDetails = require('../models/vaccinationDetails.js')
+const vaccinationDetails = require('../models/vaccinationDetails.js');
+const checkAuth = require('../middleware/check-auth');
 
-router.post('/addVaccinationDetails', (req, res, next) => {
+router.post('/addVaccinationDetails', checkAuth, (req, res, next) => {
     const details = new vaccinationDetails({
         ppsn: req.body.ppsn,
         dateOfBirth: req.body.dateOfBirth,

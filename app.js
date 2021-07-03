@@ -6,12 +6,11 @@ var logger = require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
-var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var vaccinationDetailsRouter = require('./routes/vax-details');
 
 
-mongoose.connect('mongodb://fyp-mongodb-cluster-service-loadbalancer-local/database', {useNewUrlParser: true}); //'mongodb://localhost:27017/fyp-db'
+mongoose.connect('mongodb://localhost:27017/fyp-db', {useNewUrlParser: true}); // mongodb://fyp-mongodb-cluster-service-loadbalancer-local/database
 var app = express();
 
 // view engine setup
@@ -27,7 +26,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(cors({origin: ["http://localhost:4200","http://localhost:80","http://localhost"]}));
 
-app.use('/', indexRouter);
 app.use('/api/users', usersRouter);
 app.use('/api/vaccinationDetails', vaccinationDetailsRouter);
 
