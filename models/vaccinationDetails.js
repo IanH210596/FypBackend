@@ -10,6 +10,7 @@ const vaccinationDetailsSchema = mongoose.Schema({
     city: {type: String, required: true},
     postCode: {type: String, required: true},
     selectedVaccinePreference: {type: String, required: true},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: "User", required: true}
 }); 
 
 module.exports = mongoose.model("VaccinationDetails", vaccinationDetailsSchema);

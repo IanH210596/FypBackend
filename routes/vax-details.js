@@ -14,6 +14,7 @@ router.post('/addVaccinationDetails', checkAuth, (req, res, next) => {
         city: req.body.city,
         postCode: req.body.postCode,
         selectedVaccinePreference: req.body.selectedVaccinePreference,
+        user: req.userData.userId
     });
     details.save();
     res.status(201).json({
@@ -21,5 +22,13 @@ router.post('/addVaccinationDetails', checkAuth, (req, res, next) => {
     });
   });
 
+  router.get('/getVaccinationDetails', checkAuth, (req, res, next) => {
+    vaccinationDetails.findOne().then(vaccinationDetails => {
+      res.status(200).json({
+        message: "Vaccination Details Retrieved Successfully",
+        userVaccinationDetails: vaccinationDetails
+      });
+    })
+  });
 
 module.exports = router;
