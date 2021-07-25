@@ -21,6 +21,10 @@ router.post('/addVaccinationDetails', checkAuth, (req, res, next) => {
         message: "Vaccination Details Added Successfully",
         userVaccinationDetails: vaccinationDetails
       });  
+    }).catch(() => {
+      res.status(500).json({
+        message: "Added Vaccination Details Could Not Be Saved!"
+      });
     });
   });
 
@@ -28,7 +32,7 @@ router.post('/addVaccinationDetails', checkAuth, (req, res, next) => {
     vaccinationDetails.findOne({user: req.userData.userId}).then(vaccinationDetails => {
       if(!vaccinationDetails){
           return res.status(404).json({
-          message: "Vaccination Details Not Found",
+          message: "Vaccination Details Not Yet Added!",
           userVaccinationDetails: vaccinationDetails
         })
       } else {
@@ -37,9 +41,9 @@ router.post('/addVaccinationDetails', checkAuth, (req, res, next) => {
           userVaccinationDetails: vaccinationDetails
         });
       }
-    }).catch(err => {
+    }).catch(() => {
         return res.status(404).json({
-        message: "Vaccination Details Not Found",
+        message: "Vaccination Details Not Found!",
         userVaccinationDetails: undefined
       })
     })
@@ -59,16 +63,20 @@ router.post('/addVaccinationDetails', checkAuth, (req, res, next) => {
       selectedVaccinePreference: req.body.selectedVaccinePreference,
       user: req.userData.userId
   });
-  vaccinationDetails.updateOne({_id: req.body._id}, details).then(result => {
+  vaccinationDetails.updateOne({_id: req.body._id, user: req.userData.userId}, details).then(result => {
     if(result.nModified > 0) {
       res.status(200).json({
         message: "Vaccination Details Updated Successfully",
       });
     } else {
       res.status(401).json({
-        message: "Vaccination Details Update Not Authorized",
+        message: "No Change to Vaccination Details!",
       });
     }
+  }).catch(() => {
+    res.status(500).json({
+      message: "Updated Vaccination Details Could Not Be Saved!"
+    });
   })
   });
 

@@ -22,9 +22,9 @@ router.post('/createUser', (req, res, next) => {
           result: result
         });
       })
-      .catch(err => {
+      .catch(() => {
         res.status(500).json({
-          error: err
+          message: "Invalid User Details Provided!"
         });
       });
   });
@@ -37,7 +37,7 @@ router.post('/login', (req, res, next) => {
       console.log(user);
       if(!user) {
         return res.status(401).json({
-          message: "Authentication Failed"
+          message: "User Could Not Be Found for Email Provided!"
         })
     }
     fetchedUser = user;
@@ -46,7 +46,7 @@ router.post('/login', (req, res, next) => {
   .then(result => {
     if(!result) {
       return res.status(401).json({
-        message: "Authentication Failed"
+        message: "Incorrect Password Provided!"
       })
     }
     const token = jwt.sign(
@@ -61,7 +61,7 @@ router.post('/login', (req, res, next) => {
   })
   .catch(err => {
     return res.status(401).json({
-      message: "Authentication Failed"
+      message: "Authentication Failed!"
     })
   })
 });
