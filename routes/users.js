@@ -37,7 +37,7 @@ router.post('/login', (req, res, next) => {
       console.log(user);
       if(!user) {
         return res.status(401).json({
-          message: "User Could Not Be Found for Email Provided!"
+          message: "Invalid User Credentials!"
         })
     }
     fetchedUser = user;
@@ -46,7 +46,7 @@ router.post('/login', (req, res, next) => {
   .then(result => {
     if(!result) {
       return res.status(401).json({
-        message: "Incorrect Password Provided!"
+        message: "Invalid User Credentials!"
       })
     }
     const token = jwt.sign(
