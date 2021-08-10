@@ -35,3 +35,4 @@ build
 #local test results file
 test-results.xml
 .nyc_output
+/coverage
