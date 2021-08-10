@@ -31,3 +31,7 @@ build
 
 # System Files
 .DS_Store
+
+#local test results file
+test-results.xml
+.nyc_output
