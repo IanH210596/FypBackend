@@ -1,5 +1,6 @@
 # Section executed when docker image is built
 FROM node:14-alpine as build
+# Argurments supplied when running docker build for the ports to whitelist for CORS and the URL for the MongoDB that the API must communicate with
 ARG PORT01
 ARG PORT02
 ARG PORT03
@@ -13,7 +14,7 @@ RUN echo "npm run start $PORT01 $PORT02 $PORT03 $MONGOURL" > run.sh
 # End of Section
 
 # Section executed when docker image is deployed
+# When the image is deployed, port 3000 is exposed and the run.sh file is executed to start the API
 EXPOSE 3000
 CMD ["sh", "run.sh"]
-# CMD ["npm", "run", "start"]
 # End of Section

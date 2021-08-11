@@ -6,12 +6,14 @@ var logger = require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
 
+// variables for filepaths to users and vax-details routes files.
 var usersRouter = require('./routes/users');
 var vaccinationDetailsRouter = require('./routes/vax-details');
 
+// variable for MongoDB Connection URL taken from process.argv passed as command line arguments when running API
 var mongoUrl = process.argv[5]; // 'mongodb://fyp-mongodb-cluster-service-loadbalancer-local/database' 'mongodb://localhost:27017/fyp-db'
 
-
+// open's connection to supplied MongoDB URL
 mongoose.connect(mongoUrl, {useNewUrlParser: true}); 
 var app = express();
 
@@ -25,9 +27,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-
+// used to whitelist requests originating from the specified array of frontend server domains and ports taken from process.argv passed as command line arguments when running API
 app.use(cors({origin: [process.argv[2],process.argv[3],process.argv[4]]})); //"http://localhost:4200","http://localhost:80","http://localhost"
 
+// specifying the name for the routes api endpoints
 app.use('/api/users', usersRouter);
 app.use('/api/vaccinationDetails', vaccinationDetailsRouter);
 
