@@ -1,4 +1,16 @@
-# YAML file for API staging Deployments and Services 
+# YAML file for API staging Deployments and Services
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: azure-managed-disk-staging
+spec:
+  accessModes:
+  - ReadWriteOnce
+  storageClassName: default
+  resources:
+    requests:
+      storage: 5Gi
+---
 # YAML to deploy MongoDB image and allow communication over container port 27017, with a database initialised named "database"
 apiVersion: apps/v1
 kind: Deployment
@@ -22,6 +34,13 @@ spec:
               value: database
           ports:
             - containerPort: 27017
+          volumeMounts:
+          - mountPath: "mnt/azure-staging"
+            name: volume-staging
+      volumes:
+        - name: volume-staging
+          persistentVolumeClaim:
+            claimName: azure-managed-disk-staging
 ---
 # YAML to deploy loadbalancer for the MongoDB database mapping incoming port 27017 to target port 27017 for the MongoDB deployment named "fyp-mongodb-staging"
 apiVersion: v1
