@@ -35,7 +35,7 @@ spec:
           ports:
             - containerPort: 27017
           volumeMounts:
-          - mountPath: "mnt/azure-prod"
+          - mountPath: "/data/db"
             name: volume-prod
       volumes:
         - name: volume-prod
